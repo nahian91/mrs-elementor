@@ -71,6 +71,7 @@ class Elementor_Blog_Widget extends \Elementor\Widget_Base {
 
 						<h4><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
 						<?php the_excerpt(); ?>
+                        <a href="<?php the_permalink();?>">Read More</a>
 					</div>
 				<?php endwhile; ?>
 				<?php wp_reset_postdata(); ?>
