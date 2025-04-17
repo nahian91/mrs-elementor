@@ -1,5 +1,7 @@
 <?php
-class Elementor_Slider_Widget extends \Elementor\Widget_Base {
+use Elementor\Widget_Base;
+
+class Elementor_Slider_Widget extends Widget_Base {
 
 	public function get_name(): string {
 		return 'elementor_slider_widget';
@@ -10,7 +12,7 @@ class Elementor_Slider_Widget extends \Elementor\Widget_Base {
 	}
 
 	public function get_icon(): string {
-		return 'eicon-code';
+		return 'eicon-slider-push'; // More appropriate icon for a slider
 	}
 
 	public function get_categories(): array {
@@ -18,18 +20,20 @@ class Elementor_Slider_Widget extends \Elementor\Widget_Base {
 	}
 
 	public function get_keywords(): array {
-		return [ 'hello', 'world' ];
+		return [ 'slider', 'carousel', 'image slider' ];
 	}
 
 	protected function render(): void {
-		?>
-		<p> Hello World </p>
-		<?php
+		echo '<div class="mrs-slider-widget">';
+		echo '<p>Hello World (Render)</p>';
+		echo '</div>';
 	}
 
 	protected function content_template(): void {
 		?>
-		<p> Hello World </p>
+		<div class="mrs-slider-widget">
+			<p>Hello World (Editor Preview)</p>
+		</div>
 		<?php
 	}
 }

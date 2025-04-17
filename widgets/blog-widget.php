@@ -1,4 +1,6 @@
 <?php
+use Elementor\Controls_Manager;
+
 class Elementor_Blog_Widget extends \Elementor\Widget_Base {
 
 	public function get_name(): string {
@@ -21,60 +23,61 @@ class Elementor_Blog_Widget extends \Elementor\Widget_Base {
 		return [ 'hello', 'world' ];
 	}
 
-    protected function register_controls() {
+	protected function register_controls() {
+		$this->start_controls_section(
+			'content_section',
+			[
+				'label' => __( 'Settings', 'mrs-elementor-addon' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			]
+		);
 
-        $this->start_controls_section(
-            'content_section',
-            [
-                'label' => __( 'Settings', 'mew' ),
-                'tab' => Controls_Manager::TAB_CONTENT,
-            ]
-        );
+		$this->add_control(
+			'post_count',
+			[
+				'label'   => __( 'Number of Posts', 'mrs-elementor-addon' ),
+				'type'    => Controls_Manager::NUMBER,
+				'default' => 3,
+			]
+		);
 
-        $this->add_control(
-            'post_count',
-            [
-                'label' => __( 'Number of Posts', 'mew' ),
-                'type' => Controls_Manager::NUMBER,
-                'default' => 3,
-            ]
-        );
-
-        $this->end_controls_section();
-    }
-
+		$this->end_controls_section();
+	}
 
 	protected function render() {
-        $settings = $this->get_settings_for_display();
+		$settings = $this->get_settings_for_display();
 
-        $query = new WP_Query([
-            'post_type'      => 'post',
-            'posts_per_page' => $settings['post_count'],
-        ]);
+		$query = new WP_Query([
+			'post_type'      => 'post',
+			'posts_per_page' => $settings['post_count'],
+		]);
+		?>
+		<div class="mrs-latest-posts">
+			<?php if ( $query->have_posts() ) : ?>
+				<?php while ( $query->have_posts() ) : $query->the_post(); ?>
+					<div class="mrs-post-box">
+						<?php if ( has_post_thumbnail() ) : ?>
+							<div class="mrs-thumbnail">
+								<?php the_post_thumbnail( 'medium' ); ?>
+							</div>
+						<?php endif; ?>
 
-        ?>
-            <div class="mrs-latest-posts">
-                <?php
-                    if ( $query->have_posts() ) {
-                        while ( $query->have_posts() ) {
-                            $query->the_post();
-                            ?>
-                            <div class="mrs-post-box">
-                                <?php the_pots_thumbnail();?>
-                                <p class="post-meta">
-                                    Posted on <?php echo get_the_date(); ?> in <?php the_category(', '); ?>
-                                </p>
-                                <h4><a href="<?php the_permalink();?>"><?php the_title();?></a></h4>
-                                <?php the_excerpt();?>
-                            </div>
-                            <?php
-                        }
-                        wp_reset_postdata();
-                    } else {
-                        echo '<p>No posts found.</p>';
-                    }
-                ?>
-            </div>
-        <?php 
-    }
+						<p class="post-meta">
+							<?php echo esc_html__( 'Posted on', 'mrs-elementor-addon' ); ?>
+							<?php echo esc_html( get_the_date() ); ?>
+							<?php echo esc_html__( 'in', 'mrs-elementor-addon' ); ?>
+							<?php the_category( ', ' ); ?>
+						</p>
+
+						<h4><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
+						<?php the_excerpt(); ?>
+					</div>
+				<?php endwhile; ?>
+				<?php wp_reset_postdata(); ?>
+			<?php else : ?>
+				<p><?php esc_html_e( 'No posts found.', 'mrs-elementor-addon' ); ?></p>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
 }
